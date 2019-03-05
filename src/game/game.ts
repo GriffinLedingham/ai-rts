@@ -1,25 +1,73 @@
-import Player from '../classes/player'
+import Player       from '../player/player'
+import Bot          from './bot'
+import * as UUID    from 'uuid/v4'
+import async        from 'async'
+import { post }     from '../util/util'
 
 export default class Game {
-  public players: {[key: string]: Player}
+  public id:      string
+  public bots:    Array<Bot>
+  public alive:   Array<Bot>
   public turn:    number
 
-  constructor(playerOne: Player, playerTwo: Player) {
+  constructor(players: Array<Player>) {
+    this.id = UUID()
     this.turn = 0
-    this.players[playerOne.id] = playerOne
-    this.players[playerTwo.id] = playerTwo
+    this.bots = []
+    players.forEach(this.addBot)
   }
 
+  //===========================
+  //     Core Game Loop
+  //===========================
   start() {
-    setTimeout(this.update(),1000)
+    let startCallbacks = []
+
+    this.bots.forEach((bot) => {
+      startCallbacks.push(
+        post(`${bot.url}/start`, {
+          game: {
+            id: this.id
+          }
+        })
+        .then(data => {
+          bot.alive = true
+        })
+        .catch(e => {
+          console.log(`ERR: start() - ${e}`)
+        })
+      )
+    })
+
+    return Promise.all(startCallbacks).then(() => {
+      this.play()
+    })
   }
 
-  update() {
-    console.log('update()')
-    setTimeout(this.update(),1000)
+  play() {
+    async.whilst(
+      () => this.isComplete(),
+      (done) => {
+        // Game loop
+      },
+      (err, result) => {
+        // Done callback
+      }
+    )
   }
 
-  render() {
+  //===========================
+  //     Setup Functions
+  //===========================
+  addBot(player: Player) {
 
   }
+
+  //===========================
+  //      State Functions
+  //===========================
+  isComplete() {
+    return (this.bots.reduce((a, c) => c.alive === true ? ++a : a, 0)) <= 1
+  }
+
 }
