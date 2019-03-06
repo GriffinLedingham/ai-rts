@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.get('/game',gameController.getGame)
 
 GameManager.init(PlayerManager.getPlayers())
-let gamePlayers = GameManager.getGameParticipants()
+let gamePlayers = GameManager.getAvailablePlayers()
 let game = GameManager.createGame(gamePlayers)
 game.start()
 

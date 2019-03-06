@@ -12,7 +12,7 @@ class GameManager {
 
   init(players: Array<Player>) {
     // Add all players to the game manager
-    players.forEach(this.addPlayer)
+    players.forEach((player, index) => this.addPlayer(player, index))
   }
 
   //===========================
@@ -22,9 +22,9 @@ class GameManager {
     this.players[player.id] = player
   }
 
-  getGameParticipants() {
+  getAvailablePlayers() {
     // Return a random subset of players not currently in games
-    return []
+    return Object.keys(this.players).map(key => this.players[key]).filter((player) => !player.inGame);
   }
 
   //===========================

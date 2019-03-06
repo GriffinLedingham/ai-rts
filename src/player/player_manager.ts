@@ -1,10 +1,15 @@
+import Player from "./player";
+
 class PlayerManager {
     constructor() {
 
     }
 
     getPlayers() {
-        return []
+        return [
+            new Player('http://localhost:5001'),
+            new Player('http://localhost:5001')
+        ]
     }
 }
 

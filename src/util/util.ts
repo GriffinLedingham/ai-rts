@@ -1,4 +1,4 @@
-import request from 'request-promise'
+import * as request from 'request-promise'
 
 export function post(url, data) {
     return request({
